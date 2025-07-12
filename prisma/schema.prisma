@@ -1,0 +1,125 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Customer {
+  id          String   @id @default(cuid())
+  name        String
+  email       String   @unique
+  phone       String
+  avatar      String?
+  loyaltyPoints Int    @default(0)
+  totalVisits Int      @default(0)
+  lastVisit   DateTime?
+  preferences String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  appointments Appointment[]
+  reviews      Review[]
+}
+
+model Staff {
+  id          String   @id @default(cuid())
+  name        String
+  email       String   @unique
+  phone       String
+  avatar      String?
+  specialties String?
+  rating      Float    @default(0)
+  experience  Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  appointments Appointment[]
+  services     StaffService[]
+}
+
+model Service {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  duration    Int      // in minutes
+  price       Float
+  category    String
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  appointments AppointmentService[]
+  staffServices StaffService[]
+}
+
+model Branch {
+  id        String   @id @default(cuid())
+  name      String
+  address   String
+  phone     String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  appointments Appointment[]
+}
+
+model Appointment {
+  id         String            @id @default(cuid())
+  customerId String
+  staffId    String
+  branchId   String
+  date       DateTime
+  status     AppointmentStatus @default(SCHEDULED)
+  notes      String?
+  totalPrice Float             @default(0)
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+  
+  customer Customer @relation(fields: [customerId], references: [id])
+  staff    Staff    @relation(fields: [staffId], references: [id])
+  branch   Branch   @relation(fields: [branchId], references: [id])
+  services AppointmentService[]
+}
+
+model AppointmentService {
+  id            String @id @default(cuid())
+  appointmentId String
+  serviceId     String
+  price         Float
+  
+  appointment Appointment @relation(fields: [appointmentId], references: [id])
+  service     Service     @relation(fields: [serviceId], references: [id])
+}
+
+model StaffService {
+  id        String @id @default(cuid())
+  staffId   String
+  serviceId String
+  
+  staff   Staff   @relation(fields: [staffId], references: [id])
+  service Service @relation(fields: [serviceId], references: [id])
+}
+
+model Review {
+  id         String   @id @default(cuid())
+  customerId String
+  rating     Int
+  comment    String?
+  createdAt  DateTime @default(now())
+  
+  customer Customer @relation(fields: [customerId], references: [id])
+}
+
+enum AppointmentStatus {
+  SCHEDULED
+  CONFIRMED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}

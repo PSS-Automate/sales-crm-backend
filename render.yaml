@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: salon-crm-backend
+    env: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: salon-crm-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: FRONTEND_URL
+        value: https://your-frontend-url.com
+      - key: RATE_LIMIT_MAX
+        value: 100
+      - key: RATE_LIMIT_WINDOW
+        value: 60000
+      - key: LOG_LEVEL
+        value: info
+
+databases:
+  - name: salon-crm-db
+    plan: free 

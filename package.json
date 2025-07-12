@@ -6,6 +6,9 @@
   "scripts": {
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
+    "build": "node scripts/deploy.js",
+    "deploy": "node scripts/deploy.js",
+    "postinstall": "prisma generate",
     "test": "jest",
     "test:watch": "jest --watch",
     "db:migrate": "prisma migrate dev",
@@ -29,6 +32,7 @@
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.3.1",
     "fastify": "^4.24.3",
+    "pg": "^8.11.3",
     "pino-pretty": "^13.0.0"
   },
   "devDependencies": {

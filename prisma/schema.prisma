@@ -3,25 +3,33 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Customer {
-  id          String   @id @default(cuid())
-  name        String
-  email       String   @unique
-  phone       String
-  avatar      String?
-  loyaltyPoints Int    @default(0)
-  totalVisits Int      @default(0)
-  lastVisit   DateTime?
-  preferences String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id            String   @id @default(cuid())
+  name          String
+  email         String   @unique
+  phone         String   @unique
+  whatsappId    String?  @unique // WhatsApp user ID
+  avatar        String?
+  loyaltyPoints Int      @default(0)
+  totalVisits   Int      @default(0)
+  lastVisit     DateTime?
+  preferences   Json?    // JSON field for storing WhatsApp preferences
+  metadata      Json?    // Additional WhatsApp bot data
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
   
   appointments Appointment[]
   reviews      Review[]
+  messages     WhatsAppMessage[]
+  
+  @@index([phone])
+  @@index([whatsappId])
+  @@index([createdAt])
 }
 
 model Staff {
@@ -113,6 +121,25 @@ model Review {
   createdAt  DateTime @default(now())
   
   customer Customer @relation(fields: [customerId], references: [id])
+}
+
+model WhatsAppMessage {
+  id         String   @id @default(cuid())
+  customerId String
+  messageId  String   @unique // WhatsApp message ID
+  content    String
+  messageType String  // text, image, document, etc.
+  direction  String   // inbound, outbound
+  timestamp  DateTime
+  metadata   Json?    // Additional WhatsApp message data
+  isRead     Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  
+  customer Customer @relation(fields: [customerId], references: [id])
+  
+  @@index([customerId])
+  @@index([timestamp])
+  @@index([messageId])
 }
 
 enum AppointmentStatus {

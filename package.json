@@ -2,12 +2,14 @@
   "name": "salon-crm-backend",
   "version": "1.0.0",
   "description": "Backend API for Salon Customer Relationship Management System",
-  "main": "src/app.js",
+  "main": "dist/app.js",
   "scripts": {
-    "start": "node src/app.js",
-    "dev": "nodemon src/app.js",
-    "build": "node scripts/deploy.js",
-    "deploy": "node scripts/deploy.js",
+    "start": "node dist/app.js",
+    "dev": "tsx watch src/app.ts",
+    "build": "npm run build:clean && npm run build:ts && node scripts/deploy.js",
+    "build:ts": "tsc",
+    "build:clean": "rm -rf dist",
+    "deploy": "npm run build",
     "postinstall": "prisma generate",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -16,7 +18,7 @@
     "db:seed": "node prisma/seed.js",
     "db:studio": "prisma studio"
   },
-  "keywords": ["fastify", "salon", "crm", "api", "nodejs"],
+  "keywords": ["fastify", "salon", "crm", "api", "nodejs", "typescript"],
   "author": "",
   "license": "ISC",
   "dependencies": {
@@ -36,9 +38,16 @@
     "pino-pretty": "^13.0.0"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^20.10.0",
+    "@types/pg": "^8.10.9",
     "jest": "^29.7.0",
     "nodemon": "^3.0.2",
     "prisma": "^5.7.1",
-    "supertest": "^6.3.3"
+    "supertest": "^6.3.3",
+    "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.6.2",
+    "typescript": "^5.3.2"
   }
 }

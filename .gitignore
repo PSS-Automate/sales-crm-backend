@@ -4,5 +4,12 @@ node_modules
 .env.development.local
 .env.test.local
 .env.production.local
+dist
 
 
+.cursorrules
+.env.backup
+.env.example
+DATABASE_SETUP.md
+DEPLOYMENT.md
+TEMPLATES.md

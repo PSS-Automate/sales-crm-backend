@@ -7,4 +7,6 @@ export * from './ProductType';
 export * from './SKU';
 export * from './BusinessType';
 export * from './ContactPerson';
-export * from './CreditTerms'; 
+export * from './CreditTerms';
+export * from './ServiceDuration';
+export * from './MenuCategory'; 

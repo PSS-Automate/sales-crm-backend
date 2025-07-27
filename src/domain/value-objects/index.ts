@@ -4,4 +4,7 @@ export * from './LoyaltyPoints';
 export * from './Price';
 export * from './ProductCategory';
 export * from './ProductType';
-export * from './SKU'; 
+export * from './SKU';
+export * from './BusinessType';
+export * from './ContactPerson';
+export * from './CreditTerms'; 

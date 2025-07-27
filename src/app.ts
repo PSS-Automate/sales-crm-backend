@@ -1,6 +1,7 @@
 import Fastify, { FastifyInstance } from 'fastify';
 import { Container } from './container/Container';
 import { customerRoutes } from './infrastructure/web/routes/customerRoutes';
+import { productRoutes } from './infrastructure/web/routes/productRoutes';
 
 // Environment variables
 require('dotenv').config();
@@ -168,6 +169,12 @@ async function registerRoutes() {
   await fastify.register(customerRoutes, {
     prefix: '/api/customers',
     customerController: container.customerController
+  });
+
+  // Product routes with Clean Architecture
+  await fastify.register(productRoutes, {
+    prefix: '/api',
+    productController: container.productController
   });
 }
 

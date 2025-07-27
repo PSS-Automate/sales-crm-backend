@@ -142,6 +142,30 @@ model WhatsAppMessage {
   @@index([messageId])
 }
 
+model Product {
+  id                  String   @id @default(cuid())
+  name                String
+  description         String
+  price               Decimal  @db.Decimal(10,2)
+  category            String
+  type                String
+  sku                 String   @unique
+  isActive            Boolean  @default(true)
+  durationMinutes     Int?
+  stockLevel          Int?
+  lowStockThreshold   Int?
+  metadata            Json?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@index([category])
+  @@index([type])
+  @@index([sku])
+  @@index([isActive])
+  @@index([name])
+  @@map("products")
+}
+
 enum AppointmentStatus {
   SCHEDULED
   CONFIRMED

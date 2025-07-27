@@ -3,14 +3,21 @@ import { PrismaClient } from '@prisma/client';
 // Infrastructure
 import { CustomerRepository } from '../infrastructure/database/repositories/CustomerRepository';
 import { CustomerController } from '../infrastructure/web/controllers/CustomerController';
+import { ProductRepository } from '../infrastructure/database/repositories/ProductRepository';
+import { ProductController } from '../infrastructure/web/controllers/ProductController';
 
 // Application Use Cases
 import { CreateCustomer } from '../application/use-cases/customer/CreateCustomer';
 import { GetCustomers } from '../application/use-cases/customer/GetCustomers';
 import { GetCustomerById } from '../application/use-cases/customer/GetCustomerById';
+import { CreateProduct } from '../application/use-cases/product/CreateProduct';
+import { GetProducts } from '../application/use-cases/product/GetProducts';
+import { GetProductById } from '../application/use-cases/product/GetProductById';
+import { RestockProduct } from '../application/use-cases/product/RestockProduct';
 
 // Domain Interfaces
 import { ICustomerRepository } from '../domain/repositories/ICustomerRepository';
+import { IProductRepository } from '../domain/repositories/IProductRepository';
 
 export class Container {
   private static instance: Container;
@@ -20,6 +27,12 @@ export class Container {
   private _getCustomers: GetCustomers;
   private _getCustomerById: GetCustomerById;
   private _customerController: CustomerController;
+  private _productRepository: IProductRepository;
+  private _createProduct: CreateProduct;
+  private _getProducts: GetProducts;
+  private _getProductById: GetProductById;
+  private _restockProduct: RestockProduct;
+  private _productController: ProductController;
 
   private constructor() {
     // Initialize Prisma
@@ -40,6 +53,24 @@ export class Container {
       this._createCustomer,
       this._getCustomers,
       this._getCustomerById
+    );
+
+    // Product Dependencies
+    // Infrastructure Layer - Repository
+    this._productRepository = new ProductRepository(this._prisma);
+
+    // Application Layer - Use Cases
+    this._createProduct = new CreateProduct(this._productRepository);
+    this._getProducts = new GetProducts(this._productRepository);
+    this._getProductById = new GetProductById(this._productRepository);
+    this._restockProduct = new RestockProduct(this._productRepository);
+
+    // Infrastructure Layer - Controller
+    this._productController = new ProductController(
+      this._createProduct,
+      this._getProducts,
+      this._getProductById,
+      this._restockProduct
     );
   }
 
@@ -73,6 +104,30 @@ export class Container {
 
   public get customerController(): CustomerController {
     return this._customerController;
+  }
+
+  public get productRepository(): IProductRepository {
+    return this._productRepository;
+  }
+
+  public get createProduct(): CreateProduct {
+    return this._createProduct;
+  }
+
+  public get getProducts(): GetProducts {
+    return this._getProducts;
+  }
+
+  public get getProductById(): GetProductById {
+    return this._getProductById;
+  }
+
+  public get restockProduct(): RestockProduct {
+    return this._restockProduct;
+  }
+
+  public get productController(): ProductController {
+    return this._productController;
   }
 
   // Cleanup method

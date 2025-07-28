@@ -5,6 +5,10 @@ import { CustomerRepository } from '../infrastructure/database/repositories/Cust
 import { CustomerController } from '../infrastructure/web/controllers/CustomerController';
 import { ProductRepository } from '../infrastructure/database/repositories/ProductRepository';
 import { ProductController } from '../infrastructure/web/controllers/ProductController';
+import { ClientRepository } from '../infrastructure/database/repositories/ClientRepository';
+import { ClientController } from '../infrastructure/web/controllers/ClientController';
+import { MenuItemRepository } from '../infrastructure/database/repositories/MenuItemRepository';
+import { MenuItemController } from '../infrastructure/web/controllers/MenuItemController';
 
 // Application Use Cases
 import { CreateCustomer } from '../application/use-cases/customer/CreateCustomer';
@@ -14,10 +18,18 @@ import { CreateProduct } from '../application/use-cases/product/CreateProduct';
 import { GetProducts } from '../application/use-cases/product/GetProducts';
 import { GetProductById } from '../application/use-cases/product/GetProductById';
 import { RestockProduct } from '../application/use-cases/product/RestockProduct';
+import { CreateClient } from '../application/use-cases/client/CreateClient';
+import { GetClients } from '../application/use-cases/client/GetClients';
+import { GetClientById } from '../application/use-cases/client/GetClientById';
+import { CreateMenuItem } from '../application/use-cases/menu/CreateMenuItem';
+import { GetMenuItems } from '../application/use-cases/menu/GetMenuItems';
+import { GetMenuItemById } from '../application/use-cases/menu/GetMenuItemById';
 
 // Domain Interfaces
 import { ICustomerRepository } from '../domain/repositories/ICustomerRepository';
 import { IProductRepository } from '../domain/repositories/IProductRepository';
+import { IClientRepository } from '../domain/repositories/IClientRepository';
+import { IMenuItemRepository } from '../domain/repositories/IMenuItemRepository';
 
 export class Container {
   private static instance: Container;
@@ -33,6 +45,16 @@ export class Container {
   private _getProductById: GetProductById;
   private _restockProduct: RestockProduct;
   private _productController: ProductController;
+  private _clientRepository: IClientRepository;
+  private _createClient: CreateClient;
+  private _getClients: GetClients;
+  private _getClientById: GetClientById;
+  private _clientController: ClientController;
+  private _menuItemRepository: IMenuItemRepository;
+  private _createMenuItem: CreateMenuItem;
+  private _getMenuItems: GetMenuItems;
+  private _getMenuItemById: GetMenuItemById;
+  private _menuItemController: MenuItemController;
 
   private constructor() {
     // Initialize Prisma
@@ -71,6 +93,38 @@ export class Container {
       this._getProducts,
       this._getProductById,
       this._restockProduct
+    );
+
+    // Client Dependencies
+    // Infrastructure Layer - Repository
+    this._clientRepository = new ClientRepository() as any;
+
+    // Application Layer - Use Cases
+    this._createClient = new CreateClient(this._clientRepository);
+    this._getClients = new GetClients(this._clientRepository);
+    this._getClientById = new GetClientById(this._clientRepository);
+
+    // Infrastructure Layer - Controller
+    this._clientController = new ClientController(
+      this._createClient,
+      this._getClients,
+      this._getClientById
+    );
+
+    // MenuItem Dependencies
+    // Infrastructure Layer - Repository
+    this._menuItemRepository = new MenuItemRepository();
+
+    // Application Layer - Use Cases
+    this._createMenuItem = new CreateMenuItem(this._menuItemRepository);
+    this._getMenuItems = new GetMenuItems(this._menuItemRepository);
+    this._getMenuItemById = new GetMenuItemById(this._menuItemRepository);
+
+    // Infrastructure Layer - Controller
+    this._menuItemController = new MenuItemController(
+      this._createMenuItem,
+      this._getMenuItems,
+      this._getMenuItemById
     );
   }
 
@@ -128,6 +182,46 @@ export class Container {
 
   public get productController(): ProductController {
     return this._productController;
+  }
+
+  public get clientRepository(): IClientRepository {
+    return this._clientRepository;
+  }
+
+  public get createClient(): CreateClient {
+    return this._createClient;
+  }
+
+  public get getClients(): GetClients {
+    return this._getClients;
+  }
+
+  public get getClientById(): GetClientById {
+    return this._getClientById;
+  }
+
+  public get clientController(): ClientController {
+    return this._clientController;
+  }
+
+  public get menuItemRepository(): IMenuItemRepository {
+    return this._menuItemRepository;
+  }
+
+  public get createMenuItem(): CreateMenuItem {
+    return this._createMenuItem;
+  }
+
+  public get getMenuItems(): GetMenuItems {
+    return this._getMenuItems;
+  }
+
+  public get getMenuItemById(): GetMenuItemById {
+    return this._getMenuItemById;
+  }
+
+  public get menuItemController(): MenuItemController {
+    return this._menuItemController;
   }
 
   // Cleanup method

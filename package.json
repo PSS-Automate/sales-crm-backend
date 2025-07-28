@@ -2,9 +2,9 @@
   "name": "salon-crm-backend",
   "version": "1.0.0",
   "description": "Backend API for Salon Customer Relationship Management System",
-  "main": "dist/app.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node dist/app.js",
+    "start": "node index.js",
     "dev": "tsx watch src/app.ts",
     "build": "npm run build:clean && npm run build:ts && node scripts/deploy.js",
     "build:ts": "tsc",

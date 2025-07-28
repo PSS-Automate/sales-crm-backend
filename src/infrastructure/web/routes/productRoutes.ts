@@ -12,6 +12,9 @@ export async function productRoutes(
   // Product CRUD endpoints
   fastify.post('/products', {
     schema: {
+      description: 'Create a new product',
+      tags: ['products'],
+      security: [{ bearerAuth: [] }],
       body: {
         type: 'object',
         required: ['name', 'description', 'price', 'category', 'type'],
@@ -70,6 +73,9 @@ export async function productRoutes(
 
   fastify.get('/products', {
     schema: {
+      description: 'Get all products with pagination and filtering',
+      tags: ['products'],
+      security: [{ bearerAuth: [] }],
       querystring: {
         type: 'object',
         properties: {
@@ -148,6 +154,9 @@ export async function productRoutes(
 
   fastify.get('/products/:id', {
     schema: {
+      description: 'Get product by ID',
+      tags: ['products'],
+      security: [{ bearerAuth: [] }],
       params: {
         type: 'object',
         required: ['id'],
@@ -189,6 +198,9 @@ export async function productRoutes(
   // Business operation endpoints
   fastify.put('/products/:id/restock', {
     schema: {
+      description: 'Restock a product with additional inventory',
+      tags: ['products'],
+      security: [{ bearerAuth: [] }],
       params: {
         type: 'object',
         required: ['id'],
@@ -223,6 +235,9 @@ export async function productRoutes(
   // Information endpoints
   fastify.get('/products/meta/categories', {
     schema: {
+      description: 'Get all available product categories',
+      tags: ['products'],
+      security: [{ bearerAuth: [] }],
       response: {
         200: {
           type: 'object',
@@ -246,6 +261,9 @@ export async function productRoutes(
 
   fastify.get('/products/meta/types', {
     schema: {
+      description: 'Get all available product types',
+      tags: ['products'],
+      security: [{ bearerAuth: [] }],
       response: {
         200: {
           type: 'object',
